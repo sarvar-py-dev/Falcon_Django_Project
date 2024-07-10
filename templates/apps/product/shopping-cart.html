@@ -1,0 +1,194 @@
+{% extends 'apps/base.html' %}
+
+{% block content %}
+    {% if shopping_cart.count %}
+        <div class="card">
+            <div class="card-header">
+                <div class="row justify-content-between">
+                    <div class="col-md-auto">
+                        <h5 class="mb-3 mb-md-0">Shopping Cart ({{ shopping_cart.count }} Items)</h5>
+                    </div>
+                    <div class="col-md-auto">
+                        <a class="btn btn-sm btn-outline-secondary border-300 me-2" href="{% url 'list_view' %}">
+                            <span class="fas fa-chevron-left me-1" data-fa-transform="shrink-4"></span>
+                            Continue Shopping
+                        </a>
+                        <a class="btn btn-sm btn-primary" href="../../app/e-commerce/checkout.html">Checkout</a>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body p-0">
+                <div class="row gx-card mx-0 bg-200 text-900 fs--1 fw-semi-bold">
+                    <div class="col-9 col-md-8 py-2">Name</div>
+                    <div class="col-3 col-md-4">
+                        <div class="row">
+                            <div class="col-md-8 py-2 d-none d-md-block text-center">Quantity</div>
+                            <div class="col-12 col-md-4 text-end py-2">Price</div>
+                        </div>
+                    </div>
+                </div>
+
+                {% for product in shopping_cart %}
+                    <div class="row gx-card mx-0 align-items-center border-bottom border-200">
+                        <div class="col-8 py-3">
+                            <div class="d-flex align-items-center">
+                                <a href="{% url 'detail_view' product.product.pk %}">
+                                    <img class="img-fluid rounded-1 me-3 d-none d-md-block"
+                                         src="{{ product.product.images.first.image.url }}" alt="" width="60"/>
+                                </a>
+                                <div class="flex-1">
+                                    <h5 class="fs-0">
+                                        <a class="text-900" href="{% url 'detail_view' product.product.pk %}">
+                                            {{ product.product.name }}
+                                        </a>
+                                    </h5>
+                                    <form action="{% url 'cart_delete' product.pk %}" method="post">
+                                        {% csrf_token %}
+                                        <button class="text-danger fs--2 fs-md--1" href="#!">Remove</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-4 py-3">
+                            <div class="row align-items-center">
+                                <div class="col-md-8 d-flex justify-content-end justify-content-md-center order-1 order-md-0">
+                                    <div>
+                                        <form class="quantity-form" data-url="{% url 'update_quantity' product.pk %}"
+                                              method="post">
+                                            {% csrf_token %}
+                                            <div class="input-group input-group-sm flex-nowrap"
+                                                 data-quantity="data-quantity">
+                                                <button class="btn btn-sm btn-outline-secondary border-300 px-2"
+                                                        data-type="minus">
+                                                    -
+                                                </button>
+                                                <input class="form-control text-center px-2 input-spin-none"
+                                                       type="number"
+                                                       min="1" value="{{ product.quantity }}" name="quantity"
+                                                       aria-label="Amount"
+                                                       style="width: 50px"/>
+                                                <button class="btn btn-sm btn-outline-secondary border-300 px-2"
+                                                        data-type="plus">
+                                                    +
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 text-end ps-0 order-0 order-md-1 mb-2 mb-md-0 text-600">
+                                    <span class="product-price">${{ product.product.new_price }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+
+                <div class="row fw-bold gx-card mx-0">
+                    <div class="col-9 col-md-8 py-2 text-end text-900">Total</div>
+                    <div class="col px-0">
+                        <div class="row gx-card mx-0">
+                            <div class="col-md-8 py-2 d-none d-md-block text-center">{{ total_count|default_if_none:0 }}
+                                (items)
+                            </div>
+                            <div class="col-12 col-md-4 text-end py-2">
+                                <span id="total-price">${{ total_sum|default_if_none:0 }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer bg-light d-flex justify-content-end">
+                {#            <form class="me-3">#}
+                {#                <div class="input-group input-group-sm">#}
+                {#                    <input class="form-control" type="text" placeholder="Promocode"/>#}
+                {#                    <button class="btn btn-outline-secondary border-300 btn-sm" type="submit">Apply</button>#}
+                {#                </div>#}
+                {#            </form>#}
+                <a class="btn btn-sm btn-primary" href="../../app/e-commerce/checkout.html">Checkout</a>
+            </div>
+        </div>
+
+        <script>
+            document.querySelectorAll('.quantity-form').forEach(function (form) {
+                const minusButton = form.querySelector('[data-type="minus"]');
+                const plusButton = form.querySelector('[data-type="plus"]');
+                const inputField = form.querySelector('input[name="quantity"]');
+                const url = form.getAttribute('data-url');
+
+                function updateQuantity(newQuantity) {
+                    fetch(url, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                            'X-CSRFToken': form.querySelector('[name=csrfmiddlewaretoken]').value
+                        },
+                        body: `quantity=${newQuantity}`
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.error) {
+                                console.error(data.error);
+                            } else {
+                                inputField.value = data.new_quantity;
+                                document.getElementById('total-price').innerText = `$${data.total_sum}`;
+                                document.querySelector('.cart-header h5').innerText = `Shopping Cart (${data.total_count} Items)`;
+                            }
+                        })
+                        .catch(error => console.error('Error:', error));
+                }
+
+                minusButton.addEventListener('click', function (event) {
+                    event.preventDefault();
+                    const newQuantity = Math.max(parseInt(inputField.value) - 1, 1);
+                    updateQuantity(newQuantity);
+                });
+
+                plusButton.addEventListener('click', function (event) {
+                    event.preventDefault();
+                    const newQuantity = parseInt(inputField.value) + 1;
+                    updateQuantity(newQuantity);
+                });
+
+                inputField.addEventListener('change', function (event) {
+                    const newQuantity = Math.max(parseInt(inputField.value), 1);
+                    updateQuantity(newQuantity);
+                });
+            });
+        </script>
+
+
+    {% else %}
+
+        <style>
+            .empty_uchun {
+                text-align: center;
+                margin-top: 20%;
+            }
+
+            .button {
+                background-color: #2C7BE5FF;
+                border: none;
+                color: white;
+                padding: 15px 32px;
+                text-align: center;
+                text-decoration: none;
+                display: inline-block;
+                font-size: 16px;
+                margin: 4px 2px;
+                cursor: pointer;
+                border-radius: 8px;
+            }
+
+            .cart-icon {
+                font-size: 50px;
+                color: var(--falcon-navbar-light-color);
+            }
+        </style>
+        <div class="empty_uchun">
+            <i class="fas fa-shopping-cart cart-icon"></i><br><br>
+            <h1>Cart is empty</h1>
+            <p>But you can always fill it</p>
+            <button class="button" onclick="location.href='{% url 'list_view' %}'">Home Page</button>
+        </div>
+    {% endif %}
+{% endblock %}

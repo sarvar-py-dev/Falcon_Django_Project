@@ -1,0 +1,147 @@
+{% extends 'apps/base.html' %}
+{% load static %}
+
+{% block content %}
+    <div class="card mb-3">
+        <div class="card-body">
+            <div class="row flex-between-center">
+                <div class="col-sm-auto mb-2 mb-sm-0">
+                    <h6 class="mb-0">Showing {{ page_obj.start_index }}-{{ page_obj.end_index }}
+                        of {{ page_obj.paginator.count }} Products</h6>
+                </div>
+                <div class="col-sm-auto">
+                    <div class="row gx-2 align-items-center">
+                        <div class="col-auto">
+                            <form class="row gx-2">
+                                <div class="col-auto"><small>Sort by: </small></div>
+                                <div class="col-auto">
+                                    <select class="form-select form-select-sm" aria-label="Bulk actions"
+                                            onchange="window.location.href=this.value">
+                                        <option value="?sorting=-created_at">Newest</option>
+                                        <option value="?sorting=price">Price (low)</option>
+                                        <option value="?sorting=-price">Price (high)</option>
+                                    </select>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="col-auto pe-0"><a class="text-600 px-1"
+                                                      href="../../../app/e-commerce/product/product-grid.html"
+                                                      data-bs-toggle="tooltip" title="Product Grid"><span
+                                class="fas fa-th"></span></a></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-body p-0 overflow-hidden">
+            <div class="row g-0">
+                {% for product in products %}
+                    <form action="{% url 'list_view' %}" method="post">
+                        {% csrf_token %}
+                        <div class="col-12 p-card {% if forloop.counter|divisibleby:2 %}bg-100{% endif %}">
+                            <div class="row">
+                                <div class="col-sm-5 col-md-4">
+                                    <div class="position-relative h-sm-100">
+                                        <div class="swiper-container theme-slider h-100"
+                                             data-swiper='{"autoplay":true,"autoHeight":true,"spaceBetween":5,"loop":true,"loopedSlides":5,"navigation":{"nextEl":".swiper-button-next","prevEl":".swiper-button-prev"}}'>
+                                            <div class="swiper-wrapper h-100">
+                                                {% for image_ in product.images.all %}
+                                                    <div class="swiper-slide h-100">
+                                                        <a class="d-block h-sm-100"
+                                                           href="{% url 'detail_view' product.pk %}"><img
+                                                                width="360px" height="230px"
+                                                                class="rounded-1 fit-cover"
+                                                                src="{{ image_.image.url }}"
+                                                                alt=""/></a>
+                                                    </div>
+                                                {% endfor %}
+                                            </div>
+                                            <div class=" swiper-nav">
+                                                <div class="swiper-button-next swiper-button-white"></div>
+                                                <div class="swiper-button-prev swiper-button-white"></div>
+                                            </div>
+                                        </div>
+                                        {% if product.is_new %}
+                                            <div class="badge rounded-pill bg-success position-absolute top-0 end-0 me-2 mt-2 fs--2 z-index-2">
+                                                New
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="col-sm-7 col-md-8">
+                                    <div class="row">
+                                        <div class="col-lg-8">
+                                            <h5 class="mt-3 mt-sm-0"><a class="text-dark fs-0 fs-lg-1"
+                                                                        href="{% url 'detail_view' product.pk %}">{{ product.name }}</a>
+                                            </h5>
+                                            <p class="fs--1 mb-2 mb-md-3"><a class="text-500"
+                                                                             href="{% url 'list_view' %}?category={{ product.category.slug }}">{{ product.category }}</a>
+                                            </p>
+                                            <ul class="list-unstyled d-none d-lg-block">
+                                                {% for value in product.first_five %}
+                                                    <li>
+                                                        <span class="fas fa-circle"
+                                                              data-fa-transform="shrink-12"></span>
+                                                        <span>{{ value }}</span>
+                                                    </li>
+                                                {% endfor %}
+                                            </ul>
+                                        </div>
+                                        <div class="col-lg-4 d-flex justify-content-between flex-column">
+                                            <div>
+                                                <h4 class="fs-1 fs-md-2 text-warning mb-0">${{ product.new_price }}</h4>
+                                                {% if product.discount %}
+                                                    <h5 class="fs--1 text-500 mb-0 mt-1">
+                                                        <del>${{ product.price }}</del>
+                                                        <span class="ms-1">-{{ product.discount }}%</span>
+                                                    </h5>
+                                                {% endif %}
+                                                <div class="mb-2 mt-3"><span
+                                                        class="fa fa-star text-warning"></span><span
+                                                        class="fa fa-star text-warning"></span><span
+                                                        class="fa fa-star text-warning"></span><span
+                                                        class="fa fa-star text-warning"></span><span
+                                                        class="fa fa-star-half-alt text-warning star-icon"></span><span
+                                                        class="ms-1">({{ product.review_num }})</span>
+                                                </div>
+                                                <div class="d-none d-lg-block">
+                                                    <p class="fs--1 mb-1">Shipping Cost:
+                                                        <strong>${{ product.shipping_cost }}</strong></p>
+                                                    <p class="fs--1 mb-1">Stock:
+                                                        {% if product.quantity > 0 %}
+                                                            <strong class="text-success">Available</strong>
+                                                        {% else %}
+                                                            <strong class="text-danger">Sold-Out</strong>
+                                                        {% endif %}
+
+                                                    </p>
+                                                </div>
+                                            </div>
+
+                                            <div class="mt-2"><a
+                                                    class="btn btn-sm btn-outline-secondary border-300 d-lg-block me-2 me-lg-0"
+                                                    href="#!"><span class="far fa-heart"></span><span
+                                                    class="ms-2 d-none d-md-inline-block">Favourite</span></a>
+
+                                                <a class="btn btn-sm btn-primary d-lg-block mt-lg-2" href="
+                                                        {% if user.is_authenticated %}{% url 'add_to_cart' product.pk %}{% else %}{% url 'login_page' %}{% endif %}">
+                                                    <span
+                                                            class="fas fa-cart-plus" href="#a"> </span><span
+                                                        class="ms-2 d-none d-md-inline-block">Add to Cart</span>
+                                                </a>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                {% endfor %}
+
+            </div>
+        </div>
+        {% include 'apps/parts/_pagination.html' %}
+    </div>
+{% endblock %}
