@@ -1,3 +1,7 @@
 .idea
 .venv
 .env
+apps/fixtures
+apps/migrations
+templates/public
+media
