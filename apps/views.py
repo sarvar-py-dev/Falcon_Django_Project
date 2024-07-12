@@ -1,18 +1,25 @@
 from django.contrib.auth import logout
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Sum, F, Q
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseRedirect
 from django.shortcuts import redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.views import View
-from django.views.generic import ListView, DetailView, UpdateView, CreateView, DeleteView
+from django.views.generic import ListView, DetailView, UpdateView, CreateView, DeleteView, FormView
 
 from apps.forms import UserRegisterModelForm
 from apps.models import Product, Category, User, CartItem, Address
 from apps.tasks import send_to_email
 
 
-class ProductListView(ListView):
+class CategoryMixin:
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(object_list=object_list, **kwargs)
+        context['categories'] = Category.objects.all()
+        return context
+
+
+class ProductListView(CategoryMixin, ListView):
     queryset = Product.objects.all()
     template_name = 'apps/product/product-list.html'
     context_object_name = 'products'
@@ -32,24 +39,14 @@ class ProductListView(ListView):
             qs = qs.filter(Q(name__icontains=search) | Q(description__icontains=search) | Q(about__icontains=search))
         return qs
 
-    def get_context_data(self, *, object_list=None, **kwargs):
-        context = super().get_context_data(object_list=object_list, **kwargs)
-        context['categories'] = Category.objects.all()
-        return context
 
-
-class ProductDetailView(DetailView):
+class ProductDetailView(CategoryMixin, DetailView):
     queryset = Product.objects.all()
     template_name = 'apps/product/product-details.html'
     context_object_name = 'product'
 
-    def get_context_data(self, *, object_list=None, **kwargs):
-        context = super().get_context_data(object_list=object_list, **kwargs)
-        context['categories'] = Category.objects.all()
-        return context
 
-
-class SettingsUpdateView(LoginRequiredMixin, UpdateView):
+class SettingsUpdateView(LoginRequiredMixin, CategoryMixin, UpdateView):
     queryset = User.objects.all()
     template_name = 'apps/auth/settings.html'
     fields = 'first_name', 'last_name', 'email'
@@ -57,11 +54,6 @@ class SettingsUpdateView(LoginRequiredMixin, UpdateView):
 
     def get_object(self, queryset=None):
         return self.request.user
-
-    def get_context_data(self, *, object_list=None, **kwargs):
-        context = super().get_context_data(object_list=object_list, **kwargs)
-        context['categories'] = Category.objects.all()
-        return context
 
 
 class RegisterCreateView(CreateView):
@@ -77,6 +69,17 @@ class RegisterCreateView(CreateView):
     def form_invalid(self, form):
         return super().form_invalid(form)
 
+    def dispatch(self, request, *args, **kwargs):
+        if self.request.user.is_authenticated:
+            redirect_to = reverse_lazy('list_view')
+            if redirect_to == self.request.path:
+                raise ValueError(
+                    "Redirection loop for authenticated user detected. Check that "
+                    "your LOGIN_REDIRECT_URL doesn't point to a login page."
+                )
+            return HttpResponseRedirect(redirect_to)
+        return super().dispatch(request, *args, **kwargs)
+
 
 class LogoutView(View):
     def get(self, request, *args, **kwargs):
@@ -84,7 +87,7 @@ class LogoutView(View):
         return redirect('list_view')
 
 
-class CartView(ListView):
+class CartListView(ListView):
     queryset = CartItem.objects.all()
     template_name = 'apps/product/shopping-cart.html'
     context_object_name = 'shopping_cart'
@@ -145,12 +148,32 @@ class AddToCartView(View):
         return redirect('cart_page')
 
 
-class AddressCreateView(CreateView):
+class AddressCreateView(CategoryMixin, CreateView):
     model = Address
     template_name = 'apps/address/create-address.html'
     fields = 'city', 'street', 'zip_code', 'phone', 'full_name'
     context_object_name = 'create_address'
+    success_url = reverse_lazy("cart_page")
 
     def form_valid(self, form):
         form.instance.user = self.request.user
         return super().form_valid(form)
+
+
+class AddressUpdateView(CategoryMixin, UpdateView):
+    model = Address
+    template_name = 'apps/address/update-address.html'
+    fields = 'city', 'street', 'phone', 'zip_code'
+    success_url = reverse_lazy('checkout_page')
+
+
+class CheckoutView(CategoryMixin, FormView, ListView):
+    template_name = 'apps/product/checkout.html'
+    model = CartItem
+    form_class = ''
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(object_list=object_list, **kwargs)
+        # context['addresses'] = Address.objects.filter(self.request.user)
+        context['addresses'] = Address.objects.get(user=self.request.user)
+        return context

@@ -1,7 +1,8 @@
 from django.core.exceptions import ValidationError
 from django.forms import ModelForm, CharField
 
-from apps.models import User
+from apps.models import User, Address
+from apps.models.order import OrderItem, Order
 
 
 class UserRegisterModelForm(ModelForm):
@@ -23,3 +24,8 @@ class UserRegisterModelForm(ModelForm):
         user.set_password(self.cleaned_data["password"])
         user.save()
         return user
+
+
+class CheckoutModelForm(ModelForm):
+    class Meta:
+        model = Order

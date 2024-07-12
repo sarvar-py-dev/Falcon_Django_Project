@@ -1,4 +1,5 @@
 {% extends 'apps/main_base.html' %}
+{% load mptt_tags %}
 
 {% load static %}
 
@@ -26,53 +27,7 @@
                 </div>
             </a>
         </div>
-        <div class="collapse navbar-collapse" id="navbarVerticalCollapse">
-            <div class="navbar-vertical-content scrollbar">
-                <ul class="navbar-nav flex-column mb-3" id="navbarVerticalNav">
-                    <li class="nav-item">
-                        {% for category in categories %}
-                            <a class="nav-link" href="{% url 'list_view' %}?category={{ category.slug }}"
-                               role="button" aria-expanded="false">
-                                <div class="d-flex align-items-center"><span class="nav-link-icon"><svg
-                                        class="svg-inline--fa fa-calendar-alt fa-w-14" aria-hidden="true"
-                                        focusable="false" data-prefix="fas" data-icon="calendar-alt" role="img"
-                                        xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" data-fa-i2svg=""><path
-                                        fill="currentColor"
-                                        d="M0 464c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48V192H0v272zm320-196c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12h-40c-6.6 0-12-5.4-12-12v-40zm0 128c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12h-40c-6.6 0-12-5.4-12-12v-40zM192 268c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12h-40c-6.6 0-12-5.4-12-12v-40zm0 128c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12h-40c-6.6 0-12-5.4-12-12v-40zM64 268c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12H76c-6.6 0-12-5.4-12-12v-40zm0 128c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12H76c-6.6 0-12-5.4-12-12v-40zM400 64h-48V16c0-8.8-7.2-16-16-16h-32c-8.8 0-16 7.2-16 16v48H160V16c0-8.8-7.2-16-16-16h-32c-8.8 0-16 7.2-16 16v48H48C21.5 64 0 85.5 0 112v48h448v-48c0-26.5-21.5-48-48-48z"></path></svg>
-                                    <!-- <span class="fas fa-calendar-alt"></span> Font Awesome fontawesome.com --></span><span
-                                        class="nav-link-text ps-1">{{ category.name }}</span>
-                                </div>
-                            </a>
-                            {#                                {% if not category.parent %}#}
-                            {#                                <a class="nav-link dropdown-indicator"#}
-                            {#                                   href="{% url 'list_view' %}?category={{ category.slug }}">#}
-                            {#                                    <div class="d-flex align-items-center"><span class="nav-link-icon"><svg#}
-                            {#                                            class="svg-inline--fa fa-envelope-open fa-w-16" aria-hidden="true"#}
-                            {#                                            focusable="false" data-prefix="fas"#}
-                            {#                                            data-icon="envelope-open" role="img" xmlns="http://www.w3.org/2000/svg"#}
-                            {#                                            viewBox="0 0 512 512"#}
-                            {#                                            data-fa-i2svg=""><path fill="currentColor"#}
-                            {#                                                                   d="M512 464c0 26.51-21.49 48-48 48H48c-26.51 0-48-21.49-48-48V200.724a48 48 0 0 1 18.387-37.776c24.913-19.529 45.501-35.365 164.2-121.511C199.412 29.17 232.797-.347 256 .003c23.198-.354 56.596 29.172 73.413 41.433 118.687 86.137 139.303 101.995 164.2 121.512A48 48 0 0 1 512 200.724V464zm-65.666-196.605c-2.563-3.728-7.7-4.595-11.339-1.907-22.845 16.873-55.462 40.705-105.582 77.079-16.825 12.266-50.21 41.781-73.413 41.43-23.211.344-56.559-29.143-73.413-41.43-50.114-36.37-82.734-60.204-105.582-77.079-3.639-2.688-8.776-1.821-11.339 1.907l-9.072 13.196a7.998 7.998 0 0 0 1.839 10.967c22.887 16.899 55.454 40.69 105.303 76.868 20.274 14.781 56.524 47.813 92.264 47.573 35.724.242 71.961-32.771 92.263-47.573 49.85-36.179 82.418-59.97 105.303-76.868a7.998 7.998 0 0 0 1.839-10.967l-9.071-13.196z"></path></svg></span><span#}
-                            {#                                            class="nav-link-text ps-1">{{ category.name }}</span>#}
-                            {#                                    </div>#}
-                            {#                                </a>#}
-                            {#                                {% endif %}#}
-                            {##}
-                            {#                                <ul class="nav false collapse show" id="{{ category.name }}" style="">#}
-                            {#                                    <li class="nav-item"><a class="nav-link" href="app/email/inbox.html"#}
-                            {#                                                            aria-expanded="false">#}
-                            {#                                        <div class="d-flex align-items-center"><span#}
-                            {#                                                class="nav-link-text ps-1">Inbox</span>#}
-                            {#                                        </div>#}
-                            {#                                    </a>#}
-                            {#                                    </li>#}
-                            {#                                </ul>#}
-                        {% endfor %}
-
-                    </li>
-                </ul>
-            </div>
-        </div>
+        {% include 'apps/parts/_sidebar.html' %}
     </nav>
     <div class="content">
         <nav class="navbar navbar-light navbar-glass navbar-top navbar-expand">
@@ -246,7 +201,26 @@
                 </li>
                 <li class="nav-item">
                     <a class="nav-link px-0 {% if user.cart_count %}notification-indicator{% endif %} notification-indicator-warning notification-indicator-fill fa-icon-wait"
-                       href="{% if user.is_authenticated %}{% url 'cart_page' %}{% else %}{% url 'login_page' %}{% endif %}"><span
+                       href="
+                               
+                               
+                               
+                               
+                               
+                               
+                               
+                               
+                               
+                               
+                               
+                               
+                               
+                               
+                               
+                               
+                               
+                               
+                               {% if user.is_authenticated %}{% url 'cart_page' %}{% else %}{% url 'login_page' %}{% endif %}"><span
                             class="fas fa-shopping-cart"
                             data-fa-transform="shrink-7"
                             style="font-size: 33px;"></span>
@@ -395,6 +369,25 @@
                                 
                                 
 
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
                                 
                                 
                                 
