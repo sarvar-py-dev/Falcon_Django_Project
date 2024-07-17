@@ -17,7 +17,7 @@ class SiteSettings(Model):
 
 
 class Address(CreatedBaseModel):
-    user = ForeignKey('apps.User', CASCADE)
+    user = ForeignKey('apps.User', CASCADE, related_name='address')
     city = CharField(max_length=255)
     street = CharField(max_length=255)
     zip_code = PositiveIntegerField()

@@ -53,7 +53,7 @@ class Product(CreatedBaseModel):
 
     @property
     def review_num(self):
-        return self.review_set.count()
+        return self.product_review.count()
 
     @property
     def first_five(self):
@@ -70,10 +70,20 @@ class ProductImage(Model):
 
 
 class Review(CreatedBaseModel):
+    RATING = (
+        (1, '★☆☆☆☆'),
+        (2, '★★☆☆☆'),
+        (3, '★★★☆☆'),
+        (4, '★★★★☆'),
+        (5, '★★★★★'),
+    )
+
     name = CharField(max_length=255)
     review_text = TextField()
     email_address = EmailField()
-    product = ForeignKey('apps.Product', CASCADE)
+    product = ForeignKey('apps.Product', CASCADE, related_name='product_review')
+    rating = IntegerField(choices=RATING)
+    user = ForeignKey('apps.User', CASCADE, related_name='user_review')
 
     def __str__(self):
         return F'Review_NAME-{self.name},   Product_NAME-{self.product.name}'

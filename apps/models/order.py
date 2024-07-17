@@ -23,12 +23,13 @@ class Order(CreatedBaseModel):
 
 class OrderItem(Model):
     product = ForeignKey('apps.Product', CASCADE)
-    order = ForeignKey('apps.Order', CASCADE)
-    quantity = PositiveIntegerField(default=1)
+    order = ForeignKey('apps.Order', CASCADE, related_name='order_items')
+    quantity = PositiveIntegerField()
 
 
 class CreditCard(CreatedBaseModel):
-    order = OneToOneField('apps.Order', CASCADE)
+    order = ForeignKey('apps.Order', CASCADE)
     number = CharField(max_length=16)
     cvv = CharField(max_length=3)
-    expire_data = DateField()
+    expire_date = DateField()
+    owner = ForeignKey('apps.User', CASCADE)
