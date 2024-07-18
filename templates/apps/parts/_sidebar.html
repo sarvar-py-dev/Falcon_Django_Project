@@ -69,7 +69,9 @@
             {% recursetree categories %}
                 <li class="nav-item">
                     <a class="nav-link {% if not node.is_leaf_node %}dropdown-indicator{% endif %}"
-                       href="#{{ node.slug }}" role="button" data-bs-toggle="collapse" aria-expanded="false"
+                       href="{% if node.is_leaf_node %}{% url 'list_view' %}?category={{ node.slug }}{% else %}#{{ node.slug }}{% endif %}"
+                       role="button"
+                       data-bs-toggle="collapse" aria-expanded="false"
                        aria-controls="{{ node.slug }}">
                         <div class="d-flex align-items-center">
                             <span class="nav-link-icon">

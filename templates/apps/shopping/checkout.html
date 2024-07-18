@@ -2,7 +2,7 @@
 {% load static %}
 {% load custom_tags %}
 {% block content %}
-    <form method="post" action="{% url 'create_order' %}">
+    <form method="post" action="{% url 'create_order' %}" id="orderForm">
         {% csrf_token %}
         <div class="row g-3">
             <div class="col-xl-4 order-xl-1">
@@ -18,13 +18,11 @@
                                 <tr class="border-bottom">
                                     <th class="ps-0">{{ cart_item.product.name|truncatechars:20 }}
                                         x {{ cart_item.quantity }}
-                                        <div class="text-400 fw-normal fs--2">{{ cart_item.product.about|truncatechars:64|safe }}
-                                        </div>
+                                        <div class="text-400 fw-normal fs--2">{{ cart_item.product.about|truncatechars:64|safe }}</div>
                                     </th>
                                     <th class="pe-0 text-end">${{ cart_item.product.new_price }}</th>
                                 </tr>
                             {% endfor %}
-
                             <tr class="border-bottom">
                                 <th class="ps-0">Subtotal</th>
                                 <th class="pe-0 text-end">${{ subtotal_sum }}</th>
@@ -53,10 +51,8 @@
                                 <h5 class="mb-2 mb-sm-0">Your Shipping Address</h5>
                             </div>
                             <div class="col-sm-auto">
-                                <a class="btn btn-falcon-default btn-sm"
-                                   href="{% url 'create_address' %}"><span
-                                        class="fas fa-plus me-2" data-fa-transform="shrink-2"></span>Add New Address
-                                </a>
+                                <a class="btn btn-falcon-default btn-sm" href="{% url 'create_address' %}"><span
+                                        class="fas fa-plus me-2" data-fa-transform="shrink-2"></span>Add New Address</a>
                             </div>
                         </div>
                     </div>
@@ -65,8 +61,8 @@
                             {% for address in addresses %}
                                 <div class="col-md-6 mb-3 mb-md-0">
                                     <div class="form-check mb-0 custom-radio radio-select">
-                                        <input class="form-check-input" id="address-{{ address.pk }}" type="radio" name="address"
-                                               checked="checked" value="{{ address.pk }}"/>
+                                        <input class="form-check-input" id="address-{{ address.pk }}" type="radio"
+                                               name="address" checked="checked" value="{{ address.pk }}"/>
                                         <label class="form-check-label mb-0 fw-bold d-block"
                                                for="address-{{ address.pk }}">{{ address.full_name }}
                                             <span class="radio-select-content">
@@ -76,9 +72,7 @@
                                                 {{ address.street }}
                                                 <br/>
                                                 {{ address.zip_code }}
-                                                <span class="d-block mb-0 pt-2">
-                                                    {{ address.phone|str_to_phone }}
-                                                </span>
+                                                <span class="d-block mb-0 pt-2">{{ address.phone|str_to_phone }}</span>
                                                 </span>
                                             </span>
                                         </label>
@@ -94,12 +88,10 @@
                         <h5 class="mb-0">Payment Method</h5>
                     </div>
                     <div class="card-body">
-
                         <div class="form-check mb-0">
-                            <input class="form-check-input" type="radio" value="credit_card" id="credit-card" checked="checked"
-                                   name="payment_method"/>
-                            <label class="form-check-label mb-2 fs-1" for="credit-card">Credit Card
-                            </label>
+                            <input class="form-check-input" type="radio" value="credit_card" id="credit-card"
+                                   checked="checked" name="payment_method"/>
+                            <label class="form-check-label mb-2 fs-1" for="credit-card">Credit Card</label>
                         </div>
                         <div class="row gx-0 ps-2 mb-4">
                             <div class="col-sm-8 px-3">
@@ -107,22 +99,23 @@
                                     <label class="form-label ls text-uppercase text-600 fw-semi-bold mb-0"
                                            for="inputNumber">Card Number</label>
                                     <input class="form-control" id="inputNumber" type="text"
-                                           placeholder="•••• •••• •••• ••••" maxlength="16" name="number"/>
+                                           placeholder="•••• •••• •••• ••••" maxlength="16" minlength="16"
+                                           name="number"/>
                                 </div>
                                 <div class="row align-items-center">
                                     <div class="col-6">
                                         <label class="form-label ls text-uppercase text-600 fw-semi-bold mb-0">Exp
                                             Date</label>
-                                        <input class="form-control" type="text" placeholder="mm/yyyy"
-                                               name="expire_data"/>
+                                        <input class="form-control" type="text" placeholder="mm/yy" name="expire_date"
+                                               id="expireDate"/>
                                     </div>
                                     <div class="col-6">
                                         <label class="form-label ls text-uppercase text-600 fw-semi-bold mb-0">CVV<a
                                                 class="d-inline-block" href="#" data-bs-toggle="tooltip"
                                                 data-bs-placement="top" title="Card verification value"><span
                                                 class="fa fa-question-circle ms-2"></span></a></label>
-                                        <input class="form-control" type="text" placeholder="123" maxlength="3"
-                                               pattern="[0-9]{3}" name="cvv"/>
+                                        <input class="form-control" type="text" placeholder="123" minlength="3"
+                                               maxlength="3" pattern="[0-9]{3}" name="cvv"/>
                                     </div>
                                 </div>
                             </div>
@@ -135,12 +128,11 @@
                             </div>
                         </div>
                         <div class="form-check d-flex align-items-center">
-                            <input class="form-check-input" type="radio" value="paypal" id="paypal" name="payment_method"/>
+                            <input class="form-check-input" type="radio" value="paypal" id="paypal"
+                                   name="payment_method"/>
                             <label class="form-check-label mb-0 ms-2" for="paypal"><img
-                                    src="{% static 'apps/assets/img/icons/icon-paypal-full.png' %}" height="20" alt=""/>
-                            </label>
+                                    src="{% static 'apps/assets/img/icons/icon-paypal-full.png' %}" height="20" alt=""/></label>
                         </div>
-
                         <div class="border-dashed-bottom my-5"></div>
                         <div class="row">
                             <div class="col-md-7 col-xl-12 col-xxl-7 px-md-3 mb-xxl-0 position-relative">
@@ -164,8 +156,7 @@
                                                 details</label>
                                         </div>
                                         <a class="fs--1 ms-3 ps-2" href="#!">Learn More<span
-                                                class="fas fa-caret-right ms-1"
-                                                data-fa-transform="down-2">    </span></a>
+                                                class="fas fa-caret-right ms-1" data-fa-transform="down-2"></span></a>
                                     </div>
                                 </div>
                                 <div class="vertical-line d-none d-md-block d-xl-none d-xxl-block"></div>
@@ -173,8 +164,7 @@
                             <div class="col-md-5 col-xl-12 col-xxl-5 ps-lg-4 ps-xl-2 ps-xxl-5 text-center text-md-start text-xl-center text-xxl-start">
                                 <div class="border-dashed-bottom d-block d-md-none d-xl-block d-xxl-none my-4"></div>
                                 <div class="fs-2 fw-semi-bold">All Total: <span
-                                        class="text-primary">${{ subtotal_sum }}</span>
-                                </div>
+                                        class="text-primary">${{ subtotal_sum }}</span></div>
                                 <button class="btn btn-success mt-3 px-5" type="submit">Confirm &amp; Pay</button>
                                 <p class="fs--1 mt-3 mb-0">By clicking <strong>Confirm & Pay </strong>button you agree
                                     to the <a href="#!">Terms &amp; Conditions</a></p>
@@ -185,4 +175,30 @@
             </div>
         </div>
     </form>
+    <script>
+        document.getElementById('orderForm').addEventListener('submit', function (event) {
+            const expireDate = document.getElementById('expireDate').value;
+            const [month, year] = expireDate.split('/').map(Number);
+
+            // Convert the year to a full year (assuming 2000s)
+            const fullYear = year + 2000;
+            const now = new Date();
+            const currentYear = now.getFullYear();
+            const currentMonth = now.getMonth() + 1; // JavaScript months are 0-11, so we add 1
+
+            // Create a date object for the expiration date (first day of the month)
+            const expireDateObj = new Date(fullYear, month - 1, 1); // JavaScript months are 0-11, so we subtract 1
+
+            if (month < 1 || month > 12) {
+                alert('Invalid month. Please enter a valid expiration date.');
+                event.preventDefault();
+                return;
+            }
+
+            if (fullYear < currentYear || (fullYear === currentYear && month < currentMonth)) {
+                alert('The card is expired.');
+                event.preventDefault();
+            }
+        });
+    </script>
 {% endblock %}

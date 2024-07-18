@@ -66,8 +66,10 @@
                             </td>
                             <td class="order py-2 align-middle white-space-nowrap"><a
                                     href="{% url 'order' order.pk %}">
-                                <strong>#{{ order.pk }}</strong></a>
-                                by
+                                {% if user.is_superuser or user.is_staff %}
+                                    <strong>#{{ order.pk }}</strong></a>
+                                    by
+                                {% endif %}
                                 <strong>{{ order.owner.get_full_name }}</strong><br/><a
                                         href="mailto:{{ order.owner.email }}">{{ order.owner.email }}</a>
                             </td>

@@ -11,6 +11,7 @@ from apps.forms import UserRegisterModelForm, OrderCreateModelForm
 from apps.models import Product, Category, User, CartItem, Address, Review
 from apps.models.order import Order
 from apps.tasks import send_to_email
+from django.core.cache import cache
 
 
 class CategoryMixin:
@@ -38,6 +39,11 @@ class ProductListView(CategoryMixin, ListView):
             qs.order_by(ordering)
         if search := self.request.GET.get('search'):
             qs = qs.filter(Q(name__icontains=search) | Q(description__icontains=search) | Q(about__icontains=search))
+
+        if cache.get('product_list'):
+            return cache.get('product_list')
+        cache.set('product_list', qs, timeout=7200)
+
         return qs
 
 
@@ -215,10 +221,10 @@ class OrderListView(CategoryMixin, ListView):
     context_object_name = 'orders'
     paginate_by = 10
 
-    def get(self, request, *args, **kwargs):
-        if not (self.request.user.is_staff or self.request.user.is_superuser):
-            return redirect('list_view')
-        return super().get(request, *args, **kwargs)
+    def get_queryset(self):
+        if self.request.user.is_staff or self.request.user.is_superuser:
+            return super().get_queryset()
+        return super().get_queryset().filter(owner=self.request.user)
 
 
 class OrderDetailView(CategoryMixin, DetailView):
@@ -227,6 +233,8 @@ class OrderDetailView(CategoryMixin, DetailView):
     context_object_name = 'order'
 
     def get_queryset(self):
+        if self.request.user.is_staff or self.request.user.is_superuser:
+            return super().get_queryset()
         return super().get_queryset().filter(owner=self.request.user)
 
 
