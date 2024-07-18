@@ -2,6 +2,7 @@
 
 {% load static %}
 {% load tz %}
+{% load custom_tags %}
 
 {% block content %}
     <div class="card mb-3">
@@ -11,7 +12,11 @@
         <!--/.bg-holder-->
 
         <div class="card-body position-relative">
-            <h5>Order Details: #{{ order.pk }}</h5>
+            <h5>Order Details:
+                {#                {% if user.is_superuser or user.is_staff %}#}
+                #{{ order.pk }}
+                {#                {% endif %}#}
+            </h5>
             <p class="fs--1">{{ order.created_at|date:"F j, Y, g:i A" }}</p>
             <div><strong class="me-2">Status: </strong>
                 {% if order.status == 'Completed' %}
@@ -48,7 +53,10 @@
                     <h6 class="mb-2">{{ order.address.full_name }}</h6>
                     <p class="mb-0 fs--1">{{ order.address.city }},
                         <br/>{{ order.address.street }}, {{ order.address.zip_code }}</p>
-                    <div class="text-500 fs--1">(Free Shipping)</div>
+                    <p class="mb-0 fs--1"><strong>Email: </strong><a
+                            href="mailto:{{ order.owner.email }}">{{ order.owner.email }}</a></p>
+                    <p class="mb-0 fs--1"><strong>Phone: </strong><a
+                            href="tel:{{ order.address.phone }}">{{ order.address.phone }}</a></p>
                 </div>
                 <div class="col-md-6 col-lg-4">
                     <h5 class="mb-3 fs-0">Payment Method</h5>
@@ -84,8 +92,8 @@
                                 <p class="mb-0">Down 35mb, Up 100mb</p>
                             </td>
                             <td class="align-middle text-center">{{ order_item.quantity }}</td>
-                            <td class="align-middle text-end">$65.00</td>
-                            <td class="align-middle text-end">$130.00</td>
+                            <td class="align-middle text-end">${{ order_item.product.new_price }}</td>
+                            <td class="align-middle text-end">${{ order_item.amount }}</td>
                         </tr>
                     {% endfor %}
 
@@ -97,15 +105,19 @@
                     <table class="table table-sm table-borderless fs--1 text-end">
                         <tr>
                             <th class="text-900">Subtotal:</th>
-                            <td class="fw-semi-bold">$6,230.00</td>
+                            <td class="fw-semi-bold">${{ subtotal }}</td>
                         </tr>
                         <tr>
                             <th class="text-900">Tax 5%:</th>
                             <td class="fw-semi-bold">$311.50</td>
                         </tr>
+                        <tr>
+                            <th class="text-900">Shipping Cost:</th>
+                            <td class="fw-semi-bold">${{ shipping_cost }}</td>
+                        </tr>
                         <tr class="border-top">
                             <th class="text-900">Total:</th>
-                            <td class="fw-semi-bold">$6541.50</td>
+                            <td class="fw-semi-bold">${{ subtotal|total:shipping_cost }}</td>
                         </tr>
                     </table>
                 </div>

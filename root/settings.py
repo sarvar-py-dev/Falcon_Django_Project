@@ -44,7 +44,6 @@ INSTALLED_APPS = [
     'django_ckeditor_5',
     'django_celery_results',
     'django_celery_beat',
-    'debug_toolbar'
 ]
 
 MIDDLEWARE = [
@@ -55,7 +54,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    "debug_toolbar.middleware.DebugToolbarMiddleware",
 ]
 
 ROOT_URLCONF = 'root.urls'
@@ -237,14 +235,14 @@ EMAIL_HOST_PASSWORD = os.getenv('PASSWORD_EMAIL')
 CELERY_BROKER_URL = 'amqp://guest:guest@localhost:5672//'
 CELERY_RESULT_BACKEND = 'django-db'
 
-CACHES = {
-    "default": {
-        "BACKEND": "django.core.cache.backends.redis.RedisCache",
-        "LOCATION": "redis://127.0.0.1:6379",
-    }
-}
-
-INTERNAL_IPS = [
-    "127.0.0.1",
-    "localhost"
-]
+# CACHES = {
+#     "default": {
+#         "BACKEND": "django.core.cache.backends.redis.RedisCache",
+#         "LOCATION": "redis://127.0.0.1:6379",
+#     }
+# }
+#
+# INTERNAL_IPS = [
+#     "127.0.0.1",
+#     "localhost"
+# ]

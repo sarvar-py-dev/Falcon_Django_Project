@@ -9,9 +9,11 @@ from django.views.generic import ListView, DetailView, UpdateView, CreateView, D
 
 from apps.forms import UserRegisterModelForm, OrderCreateModelForm
 from apps.models import Product, Category, User, CartItem, Address, Review
-from apps.models.order import Order
+from apps.models.order import Order, OrderItem
 from apps.tasks import send_to_email
-from django.core.cache import cache
+
+
+# from django.core.cache import cache
 
 
 class CategoryMixin:
@@ -26,7 +28,7 @@ class ProductListView(CategoryMixin, ListView):
     template_name = 'apps/product/product-list.html'
     context_object_name = 'products'
 
-    paginate_by = 2
+    paginate_by = 10
 
     def get_queryset(self):
         qs = super().get_queryset()
@@ -40,11 +42,25 @@ class ProductListView(CategoryMixin, ListView):
         if search := self.request.GET.get('search'):
             qs = qs.filter(Q(name__icontains=search) | Q(description__icontains=search) | Q(about__icontains=search))
 
-        if cache.get('product_list'):
-            return cache.get('product_list')
-        cache.set('product_list', qs, timeout=7200)
+        # if cache.get('product_list'):
+        #     return cache.get('product_list')
+        # cache.set('product_list', qs, timeout=7200)
 
         return qs
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        ctx = super().get_context_data(object_list=object_list, **kwargs)
+        avg_ratings = []
+        blank_stars = []
+        for product in ctx[self.context_object_name]:
+            avg_rating = int(Review.objects.filter(product=product).aggregate(rating=Avg('rating'))['rating'] or 0)
+            avg_ratings.append(avg_rating)
+            blank_stars.append(5 - avg_rating)
+
+        ctx['avg_ratings'] = avg_ratings
+        ctx['blank_stars'] = blank_stars
+
+        return ctx
 
 
 class ProductDetailView(CategoryMixin, DetailView):
@@ -207,8 +223,8 @@ class CheckoutListView(LoginRequiredMixin, CategoryMixin, ListView):
 
         context.update(
             **qs.aggregate(
-                subtotal_sum=Sum(F('quantity') * F('product__price') * (100 - F('product__discount')) / 100),
-                shipping_cost_sum=Sum(F('product__shipping_cost'))
+                subtotal=Sum(F('quantity') * F('product__price') * (100 - F('product__discount')) / 100),
+                shipping_cost=Sum(F('product__shipping_cost'))
             )
         )
         context['addresses'] = Address.objects.filter(user=self.request.user)
@@ -237,6 +253,19 @@ class OrderDetailView(CategoryMixin, DetailView):
             return super().get_queryset()
         return super().get_queryset().filter(owner=self.request.user)
 
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(object_list=object_list, **kwargs)
+        qs = OrderItem.objects.filter(order_id=context['order'].id)
+
+        context.update(
+            **qs.aggregate(
+                subtotal=Sum(F('quantity') * (F('product__price') * (
+                        100 - F('product__discount')) / 100)),
+                shipping_cost=Sum(F('product__shipping_cost'))
+            )
+        )
+        return context
+
 
 class OrderDeleteView(DeleteView):
     model = Order
@@ -252,3 +281,15 @@ class OrderCreateView(LoginRequiredMixin, CategoryMixin, CreateView):
     def form_valid(self, form):
         form.instance.owner = self.request.user
         return super().form_valid(form)
+
+
+class CustomerListView(CategoryMixin, ListView):
+    model = User
+    template_name = 'apps/customers/customers.html'
+    paginate_by = 10
+    context_object_name = 'customers_list'
+
+    def get(self, request, *args, **kwargs):
+        if request.user.is_staff or request.user.is_superuser:
+            return super().get(request, *args, **kwargs)
+        return redirect('list_view')

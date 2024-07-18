@@ -23,5 +23,10 @@ def is_liked(user, product) -> bool:
 
 
 @register.filter()
-def payable_total(sub_total, shipping_cost):
+def total(sub_total, shipping_cost):
     return sub_total + shipping_cost
+
+
+@register.filter()
+def get_obj_in_list(l, index):
+    return l[index]

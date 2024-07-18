@@ -1,5 +1,6 @@
 {% extends 'apps/base.html' %}
 {% load static %}
+{% load custom_tags %}
 
 {% block content %}
     <div class="card mb-3">
@@ -97,13 +98,14 @@
                                                         <span class="ms-1">-{{ product.discount }}%</span>
                                                     </h5>
                                                 {% endif %}
-                                                <div class="mb-2 mt-3"><span
-                                                        class="fa fa-star text-warning"></span><span
-                                                        class="fa fa-star text-warning"></span><span
-                                                        class="fa fa-star text-warning"></span><span
-                                                        class="fa fa-star text-warning"></span><span
-                                                        class="fa fa-star-half-alt text-warning star-icon"></span><span
-                                                        class="ms-1">({{ product.review_num }})</span>
+                                                <div class="mb-2 mt-3">
+                                                    {% for i in avg_ratings|get_obj_in_list:forloop.counter0|custom_range %}
+                                                        <span class="fa fa-star text-warning"></span>
+                                                    {% endfor %}
+                                                    {% for i in blank_stars|get_obj_in_list:forloop.counter0|custom_range %}
+                                                        <span class="far fa-star text-warning"></span>
+                                                    {% endfor %}
+                                                    <span class="ms-1">({{ product.review_num }})</span>
                                                 </div>
                                                 <div class="d-none d-lg-block">
                                                     <p class="fs--1 mb-1">Shipping Cost:
@@ -125,6 +127,8 @@
                                                     class="ms-2 d-none d-md-inline-block">Favourite</span></a>
                                                 {% if product.quantity > 0 %}
                                                     <a class="btn btn-sm btn-primary d-lg-block mt-lg-2" href="
+
+
                                                             {% if user.is_authenticated %}{% url 'add_to_cart' product.pk %}{% else %}{% url 'login_page' %}{% endif %}">
                                                     <span
                                                             class="fas fa-cart-plus" href="#a"> </span><span
