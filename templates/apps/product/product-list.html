@@ -68,6 +68,11 @@
                                                 New
                                             </div>
                                         {% endif %}
+                                        {% if product.is_premium %}
+                                            <div style="background-color: goldenrod" class="badge rounded-pill position-absolute top-0 me-2 mt-2 fs--2 z-index-2">
+                                                PRO
+                                            </div>
+                                        {% endif %}
                                     </div>
                                 </div>
                                 <div class="col-sm-7 col-md-8">

@@ -1,5 +1,5 @@
 from django.db.models import Model, CharField, ForeignKey, CASCADE, TextChoices, PositiveIntegerField, OneToOneField, \
-    DateField, Sum, F
+    DateField, Sum, F, FileField
 
 from apps.models import CreatedBaseModel
 
@@ -19,6 +19,7 @@ class Order(CreatedBaseModel):
     status = CharField(max_length=25, choices=Status.choices, default=Status.PROCESSING)
     address = ForeignKey('apps.Address', CASCADE, related_name='orders')
     owner = ForeignKey('apps.User', CASCADE, related_name='orders')
+    pdf_file = FileField()
 
     @property
     def total(self):

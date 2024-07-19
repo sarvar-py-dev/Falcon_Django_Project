@@ -53,23 +53,28 @@
 
                     </div>
                     <div class="col-auto">
-                        <button class="btn btn-falcon-default btn-sm me-1 mb-2 mb-sm-0" type="button">
-                            <svg class="svg-inline--fa fa-arrow-down fa-w-14 me-1" aria-hidden="true" focusable="false"
-                                 data-prefix="fas" data-icon="arrow-down" role="img" xmlns="http://www.w3.org/2000/svg"
-                                 viewBox="0 0 448 512" data-fa-i2svg="">
-                                <path fill="currentColor"
-                                      d="M413.1 222.5l22.2 22.2c9.4 9.4 9.4 24.6 0 33.9L241 473c-9.4 9.4-24.6 9.4-33.9 0L12.7 278.6c-9.4-9.4-9.4-24.6 0-33.9l22.2-22.2c9.5-9.5 25-9.3 34.3.4L184 343.4V56c0-13.3 10.7-24 24-24h32c13.3 0 24 10.7 24 24v287.4l114.8-120.5c9.3-9.8 24.8-10 34.3-.4z"></path>
-                            </svg><!-- <span class="fas fa-arrow-down me-1"> </span> Font Awesome fontawesome.com -->
-                            Download (.pdf)
-                        </button>
-{#                        <button class="btn btn-falcon-default btn-sm me-1 mb-2 mb-sm-0" type="button">#}
-{#                            <svg class="svg-inline--fa fa-print fa-w-16 me-1" aria-hidden="true" focusable="false"#}
-{#                                 data-prefix="fas" data-icon="print" role="img" xmlns="http://www.w3.org/2000/svg"#}
-{#                                 viewBox="0 0 512 512" data-fa-i2svg="">#}
-{#                                <path fill="currentColor"#}
-{#                                      d="M448 192V77.25c0-8.49-3.37-16.62-9.37-22.63L393.37 9.37c-6-6-14.14-9.37-22.63-9.37H96C78.33 0 64 14.33 64 32v160c-35.35 0-64 28.65-64 64v112c0 8.84 7.16 16 16 16h48v96c0 17.67 14.33 32 32 32h320c17.67 0 32-14.33 32-32v-96h48c8.84 0 16-7.16 16-16V256c0-35.35-28.65-64-64-64zm-64 256H128v-96h256v96zm0-224H128V64h192v48c0 8.84 7.16 16 16 16h48v96zm48 72c-13.25 0-24-10.75-24-24 0-13.26 10.75-24 24-24s24 10.74 24 24c0 13.25-10.75 24-24 24z"></path>#}
-{#                            </svg><!-- <span class="fas fa-print me-1"> </span> Font Awesome fontawesome.com -->Print#}
-{#                        </button>#}
+                        <a href="{% url 'download_pdf' order.pk %}">
+                            <button class="btn btn-falcon-default btn-sm me-1 mb-2 mb-sm-0" type="button">
+                                <svg class="svg-inline--fa fa-arrow-down fa-w-14 me-1" aria-hidden="true"
+                                     focusable="false"
+                                     data-prefix="fas" data-icon="arrow-down" role="img"
+                                     xmlns="http://www.w3.org/2000/svg"
+                                     viewBox="0 0 448 512" data-fa-i2svg="">
+                                    <path fill="currentColor"
+                                          d="M413.1 222.5l22.2 22.2c9.4 9.4 9.4 24.6 0 33.9L241 473c-9.4 9.4-24.6 9.4-33.9 0L12.7 278.6c-9.4-9.4-9.4-24.6 0-33.9l22.2-22.2c9.5-9.5 25-9.3 34.3.4L184 343.4V56c0-13.3 10.7-24 24-24h32c13.3 0 24 10.7 24 24v287.4l114.8-120.5c9.3-9.8 24.8-10 34.3-.4z"></path>
+                                </svg>
+                                <!-- <span class="fas fa-arrow-down me-1"> </span> Font Awesome fontawesome.com -->
+                                Download (.pdf)
+                            </button>
+                        </a>
+                        {#                        <button class="btn btn-falcon-default btn-sm me-1 mb-2 mb-sm-0" type="button">#}
+                        {#                            <svg class="svg-inline--fa fa-print fa-w-16 me-1" aria-hidden="true" focusable="false"#}
+                        {#                                 data-prefix="fas" data-icon="print" role="img" xmlns="http://www.w3.org/2000/svg"#}
+                        {#                                 viewBox="0 0 512 512" data-fa-i2svg="">#}
+                        {#                                <path fill="currentColor"#}
+                        {#                                      d="M448 192V77.25c0-8.49-3.37-16.62-9.37-22.63L393.37 9.37c-6-6-14.14-9.37-22.63-9.37H96C78.33 0 64 14.33 64 32v160c-35.35 0-64 28.65-64 64v112c0 8.84 7.16 16 16 16h48v96c0 17.67 14.33 32 32 32h320c17.67 0 32-14.33 32-32v-96h48c8.84 0 16-7.16 16-16V256c0-35.35-28.65-64-64-64zm-64 256H128v-96h256v96zm0-224H128V64h192v48c0 8.84 7.16 16 16 16h48v96zm48 72c-13.25 0-24-10.75-24-24 0-13.26 10.75-24 24-24s24 10.74 24 24c0 13.25-10.75 24-24 24z"></path>#}
+                        {#                            </svg><!-- <span class="fas fa-print me-1"> </span> Font Awesome fontawesome.com -->Print#}
+                        {#                        </button>#}
                     </div>
                 </div>
             </div>

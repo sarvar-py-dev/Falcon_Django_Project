@@ -34,6 +34,7 @@ class Product(CreatedBaseModel):
     quantity = PositiveSmallIntegerField()
     category = ForeignKey('apps.Category', CASCADE)
     tags = ManyToManyField('apps.Tag', blank=True)
+    is_premium = BooleanField(db_default=False)
 
     class Meta:
         constraints = [

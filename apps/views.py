@@ -12,6 +12,7 @@ from apps.models import Product, Category, User, CartItem, Address, Review, Site
 from apps.models.order import Order, OrderItem
 from apps.models.product import Favorite
 from apps.tasks import send_to_email
+from generate_pdf import make_pdf
 
 
 # from django.core.cache import cache
@@ -46,8 +47,9 @@ class ProductListView(CategoryMixin, ListView):
         # if cache.get('product_list'):
         #     return cache.get('product_list')
         # cache.set('product_list', qs, timeout=7200)
-
-        return qs
+        if self.request.user.is_authenticated and (self.request.user.has_pro or self.request.user.is_superuser or self.request.user.is_sta):
+            return qs
+        return qs.filter(is_premium=False)
 
     def get_context_data(self, *, object_list=None, **kwargs):
         ctx = super().get_context_data(object_list=object_list, **kwargs)
@@ -314,3 +316,14 @@ class FavouriteView(LoginRequiredMixin, CategoryMixin, View):
             return redirect(referer)
         else:
             return redirect('product_detail', pk=pk)
+
+
+class OrderPdfCreateView(View):
+    def get(self, request, *args, **kwargs):
+        pk = kwargs['pk']
+        order = Order.objects.filter(pk=pk)
+        if file := order.pdf_file:
+            pass
+
+        else:
+            make_pdf(order)

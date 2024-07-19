@@ -1,12 +1,14 @@
 from django.contrib.auth.models import AbstractUser
 from django.db.models import Model, CharField, ForeignKey, CASCADE, PositiveIntegerField, OneToOneField, \
-    DateField
+    DateField, BooleanField
 from django.db.models import PositiveSmallIntegerField
 
 from apps.models import CreatedBaseModel
 
 
 class User(AbstractUser):
+    has_pro = BooleanField(default=False)
+
     @property
     def cart_count(self):
         return self.cartitem_set.count()
