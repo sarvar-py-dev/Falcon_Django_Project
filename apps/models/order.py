@@ -6,7 +6,7 @@ from apps.models import CreatedBaseModel
 
 class Order(CreatedBaseModel):
     class Status(TextChoices):
-        PROCESSING = 'Processing', 'Processing'
+        PROCESSING = 'processing', 'Processing'
         ON_HOLD = 'on_hold', 'On Hold'
         PENDING = 'pending', 'Pending'
         COMPLETED = 'completed', 'Completed'

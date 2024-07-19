@@ -57,5 +57,6 @@ class OrderCreateModelForm(ModelForm):
             OrderItem.objects.create(order=obj,
                                      quantity=cart_item.quantity,
                                      product=cart_item.product)
+            cart_item.product.quantity -= cart_item.quantity
         CartItem.objects.filter(user=obj.owner).delete()
         return obj

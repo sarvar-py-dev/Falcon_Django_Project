@@ -91,7 +91,7 @@ class Review(CreatedBaseModel):
 
 class Favorite(Model):
     is_liked = BooleanField(blank=True, null=True)
-    user = ForeignKey('apps.User', CASCADE)
+    user = ForeignKey('apps.User', CASCADE, related_name='like')
     product = ForeignKey('apps.Product', CASCADE, related_name='product_like')
 
     def __str__(self):

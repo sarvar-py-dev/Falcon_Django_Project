@@ -10,6 +10,7 @@ from django.views.generic import ListView, DetailView, UpdateView, CreateView, D
 from apps.forms import UserRegisterModelForm, OrderCreateModelForm
 from apps.models import Product, Category, User, CartItem, Address, Review
 from apps.models.order import Order, OrderItem
+from apps.models.product import Favorite
 from apps.tasks import send_to_email
 
 
@@ -293,3 +294,21 @@ class CustomerListView(CategoryMixin, ListView):
         if request.user.is_staff or request.user.is_superuser:
             return super().get(request, *args, **kwargs)
         return redirect('list_view')
+
+
+class OrderUpdateView(UpdateView):
+    model = Order
+    template_name = 'apps/orders/order-list.html'
+    fields = 'status'
+
+
+class FavouriteView(LoginRequiredMixin, CategoryMixin, View):
+    def get(self, request, pk, *args, **kwargs):
+        obj, created = Favorite.objects.get_or_create(user=request.user, product_id=pk)
+        if not created:
+            obj.delete()
+        referer = request.META.get('HTTP_REFERER')
+        if referer:
+            return redirect(referer)
+        else:
+            return redirect('product_detail', pk=pk)

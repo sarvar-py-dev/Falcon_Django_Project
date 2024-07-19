@@ -86,20 +86,23 @@
                                     <span class="d-none d-sm-inline-block">Add To Cart</span>
                                 </a>
                             </div>
-                            <div class="col-auto px-0"><a class="btn btn-sm btn-outline-danger border-300" href="#!"
-                                                          data-bs-toggle="tooltip" data-bs-placement="top"
-                                                          title="Add to Wish List"><span
-                                    class="far fa-heart me-1"></span>282</a>
+                            <div class="col-auto px-0"><a
+                                    class="btn btn-sm btn{% if not user|is_liked:product %}-outline{% endif %}-danger border-300"
+                                    href="{% url 'favorite_page' product.pk %}"
+                                    data-bs-toggle="tooltip" data-bs-placement="top"
+                                    title="Add to Wish List"><span
+                                    class="far fa-heart me-1"></span>{{ product.product_like.count }}</a>
                             </div>
                         </div>
                     {% else %}
-                        <div class="col-auto px-0"><a class="btn btn-sm btn-outline-danger border-300" href="#!"
-                                                      data-bs-toggle="tooltip" data-bs-placement="top"
-                                                      title="Add to Wish List"><span
-                                class="far fa-heart me-1"></span>282</a>
-
-                        </div>
-{#                        <a class="btn btn-sm btn{% if not user|is_liked:product %}-outline{% endif %}-danger border-300" href="{% url 'add_favorite' product.id %}"#}
+                        <div class="col-auto px-0"><a
+                                    class="btn btn-sm btn{% if not user|is_liked:product %}-outline{% endif %}-danger border-300"
+                                    href="{% url 'favorite_page' product.pk %}"
+                                    data-bs-toggle="tooltip" data-bs-placement="top"
+                                    title="Add to Wish List"><span
+                                    class="far fa-heart me-1"></span>{{ product.product_like.count }}</a>
+                            </div>
+                        {#                        <a class="btn btn-sm btn{% if not user|is_liked:product %}-outline{% endif %}-danger border-300" href="{% url 'add_favorite' product.id %}"#}
                         {#                               data-bs-toggle="tooltip" data-bs-placement="top"#}
                         {#                               title="Add to Wish List">#}
                         {#                            <span class="far fa-heart me-1"></span>#}
