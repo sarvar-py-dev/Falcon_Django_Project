@@ -39,7 +39,7 @@ class OrderItem(Model):
 
 
 class CreditCard(CreatedBaseModel):
-    order = ForeignKey('apps.Order', CASCADE)
+    order = OneToOneField('apps.Order', CASCADE)
     number = CharField(max_length=16)
     cvv = CharField(max_length=3)
     expire_date = DateField()

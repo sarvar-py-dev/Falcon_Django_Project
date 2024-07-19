@@ -3,6 +3,7 @@ from mptt.admin import DraggableMPTTAdmin
 
 from apps.models import Category, Product, ProductImage, Tag, Review
 from apps.models.order import Order, OrderItem
+from apps.models.user import SiteSettings
 
 
 @register(Category)
@@ -48,4 +49,9 @@ class OrderModelAdmin(ModelAdmin):
 
 @register(OrderItem)
 class OrderItemsModelAdmin(ModelAdmin):
+    pass
+
+
+@register(SiteSettings)
+class SiteSettingsModelAdmin(ModelAdmin):
     pass

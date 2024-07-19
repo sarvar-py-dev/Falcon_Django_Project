@@ -4,8 +4,7 @@ from django.urls import path, include
 from apps.views import ProductListView, ProductDetailView, SettingsUpdateView, RegisterCreateView, LogoutView, \
     CartListView, \
     CartDeleteView, AddToCartView, update_quantity, AddressCreateView, CheckoutListView, AddressUpdateView, \
-    ReviewCreateView, OrderListView, OrderDetailView, OrderDeleteView, OrderCreateView, CustomerListView, \
-    OrderUpdateView, FavouriteView
+    ReviewCreateView, OrderListView, OrderDetailView, OrderDeleteView, OrderCreateView, CustomerListView, FavouriteView
 
 urlpatterns = [
     path('', ProductListView.as_view(), name='list_view'),
@@ -31,6 +30,5 @@ urlpatterns = [
     path('order-create', OrderCreateView.as_view(), name='create_order'),
     path('order/delete/<int:pk>', OrderDeleteView.as_view(), name='order_delete'),
     path('customers-list', CustomerListView.as_view(), name='customers_list'),
-    path('order-update', OrderUpdateView.as_view(), name='order_update'),
     path('favorite/<int:pk>', FavouriteView.as_view(), name='favorite_page'),
 ]

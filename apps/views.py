@@ -8,7 +8,7 @@ from django.views import View
 from django.views.generic import ListView, DetailView, UpdateView, CreateView, DeleteView
 
 from apps.forms import UserRegisterModelForm, OrderCreateModelForm
-from apps.models import Product, Category, User, CartItem, Address, Review
+from apps.models import Product, Category, User, CartItem, Address, Review, SiteSettings
 from apps.models.order import Order, OrderItem
 from apps.models.product import Favorite
 from apps.tasks import send_to_email
@@ -229,6 +229,7 @@ class CheckoutListView(LoginRequiredMixin, CategoryMixin, ListView):
             )
         )
         context['addresses'] = Address.objects.filter(user=self.request.user)
+        context['tax'] = SiteSettings.objects.first().tax
         return context
 
 
@@ -242,6 +243,12 @@ class OrderListView(CategoryMixin, ListView):
         if self.request.user.is_staff or self.request.user.is_superuser:
             return super().get_queryset()
         return super().get_queryset().filter(owner=self.request.user)
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(object_list=object_list, **kwargs)
+        context['tax'] = SiteSettings.objects.first().tax
+
+        return context
 
 
 class OrderDetailView(CategoryMixin, DetailView):
@@ -265,6 +272,7 @@ class OrderDetailView(CategoryMixin, DetailView):
                 shipping_cost=Sum(F('product__shipping_cost'))
             )
         )
+        context['tax'] = SiteSettings.objects.first().tax
         return context
 
 
@@ -294,12 +302,6 @@ class CustomerListView(CategoryMixin, ListView):
         if request.user.is_staff or request.user.is_superuser:
             return super().get(request, *args, **kwargs)
         return redirect('list_view')
-
-
-class OrderUpdateView(UpdateView):
-    model = Order
-    template_name = 'apps/orders/order-list.html'
-    fields = 'status'
 
 
 class FavouriteView(LoginRequiredMixin, CategoryMixin, View):

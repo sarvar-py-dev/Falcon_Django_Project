@@ -1,5 +1,5 @@
 {% extends 'apps/base.html' %}
-
+{% load custom_tags %}
 {% block content %}
     <div class="card mb-3" id="ordersTable"
          data-list='{"valueNames":["order","date","address","status","amount"],"page":10,"pagination":true}'>
@@ -102,37 +102,7 @@
                                         data-fa-transform="shrink-2"></span></span>
                                 </td>
                             {% endif %}
-                            <td class="amount py-2 align-middle text-end fs-0 fw-medium">${{ order.total.total }}</td>
-                            {% if user.is_superuser or user.is_staff %}
-                                <td class="py-2 align-middle white-space-nowrap text-end">
-                                    <div class="dropdown font-sans-serif position-static">
-                                        <button class="btn btn-link text-600 btn-sm dropdown-toggle btn-reveal"
-                                                type="button"
-                                                id="order-dropdown-0" data-bs-toggle="dropdown" data-boundary="viewport"
-                                                aria-haspopup="true" aria-expanded="false"><span
-                                                class="fas fa-ellipsis-h fs--1"></span></button>
-                                        <div class="dropdown-menu dropdown-menu-end border py-0"
-                                             aria-labelledby="order-dropdown-0">
-                                            <div class="bg-white py-2">
-                                                <form action="{% url 'order_update' %}" method="post">
-                                                    {% csrf_token %}
-                                                    <button class="dropdown-item" name="completed">Completed</button>
-                                                    <button class="dropdown-item" name="processing">Processing</button>
-                                                    <button class="dropdown-item" name="on_hold">On Hold</button>
-                                                    <button class="dropdown-item" name="pending">Pending</button>
-                                                </form>
-                                                <div class="dropdown-divider"></div>
-                                                <form action="{% url 'order_delete' order.pk %}" method="post">
-                                                    {% csrf_token %}
-                                                    <button class="dropdown-item text-danger">
-                                                        Delete
-                                                    </button>
-                                                </form>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </td>
-                            {% endif %}
+                            <td class="amount py-2 align-middle text-end fs-0 fw-medium">${{ order.total.total|create_tax_sum:tax|add:order.total.total }}</td>
                         </tr>
                     {% endfor %}
                     </tbody>

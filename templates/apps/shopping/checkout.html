@@ -31,15 +31,21 @@
                                 <th class="ps-0">Shipping</th>
                                 <th class="pe-0 text-end">${{ shipping_cost }}</th>
                             </tr>
+                            <tr class="border-bottom">
+                                <th class="ps-0">Tax: <span style="color: red">{{ tax }}%</span></th>
+                                <th class="pe-0 text-end">${{ subtotal|add:shipping_cost|create_tax_sum:tax }}</th>
+                            </tr>
                             <tr>
                                 <th class="ps-0 pb-0">Total</th>
-                                <th class="pe-0 text-end pb-0">${{ subtotal|total:shipping_cost }}</th>
+                                <th class="pe-0 text-end pb-0">
+                                    ${{ subtotal|add:shipping_cost|create_tax_sum:tax|add:subtotal|add:shipping_cost }}</th>
                             </tr>
                         </table>
                     </div>
                     <div class="card-footer d-flex justify-content-between bg-light">
                         <div class="fw-semi-bold">Payable Total</div>
-                        <div class="fw-bold">${{ subtotal|total:shipping_cost }}</div>
+                        <div class="fw-bold">
+                            ${{ subtotal|add:shipping_cost|create_tax_sum:tax|add:subtotal|add:shipping_cost }}</div>
                     </div>
                 </div>
             </div>
@@ -164,7 +170,8 @@
                             <div class="col-md-5 col-xl-12 col-xxl-5 ps-lg-4 ps-xl-2 ps-xxl-5 text-center text-md-start text-xl-center text-xxl-start">
                                 <div class="border-dashed-bottom d-block d-md-none d-xl-block d-xxl-none my-4"></div>
                                 <div class="fs-2 fw-semi-bold">All Total: <span
-                                        class="text-primary">${{ subtotal|total:shipping_cost }}</span></div>
+                                        class="text-primary">${{ subtotal|add:shipping_cost|create_tax_sum:tax|add:subtotal|add:shipping_cost }}</span>
+                                </div>
                                 <button class="btn btn-success mt-3 px-5" type="submit">Confirm &amp; Pay</button>
                                 <p class="fs--1 mt-3 mb-0">By clicking <strong>Confirm & Pay </strong>button you agree
                                     to the <a href="#!">Terms &amp; Conditions</a></p>
