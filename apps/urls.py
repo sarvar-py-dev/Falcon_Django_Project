@@ -6,18 +6,15 @@ from apps.views import ProductListView, ProductDetailView, SettingsUpdateView, R
     CartListView, \
     CartDeleteView, AddToCartView, update_quantity, AddressCreateView, CheckoutListView, AddressUpdateView, \
     ReviewCreateView, OrderListView, OrderDetailView, OrderDeleteView, OrderCreateView, CustomerListView, FavouriteView, \
-    OrderPdfCreateView
+    OrderPdfCreateView, CustomLoginView
 
 urlpatterns = [
     path('', ProductListView.as_view(), name='list_view'),
     path('detail/<int:pk>', ProductDetailView.as_view(), name='detail_view'),
     path('settings', SettingsUpdateView.as_view(), name='settings_page'),
     path('register', RegisterCreateView.as_view(), name='register_page'),
-    path('login', LoginView.as_view(
-        template_name='apps/auth/login.html',
-        redirect_authenticated_user=True,
-        next_page='list_view'
-    ), name='login_page'),
+    path('login', CustomLoginView.as_view(),name='login_page'),
+
     path('logout', LogoutView.as_view(), name='logout_page'),
     path('shopping-cart', CartListView.as_view(), name='cart_page'),
     path('shopping-cart/delete/<int:pk>', CartDeleteView.as_view(), name='cart_delete'),

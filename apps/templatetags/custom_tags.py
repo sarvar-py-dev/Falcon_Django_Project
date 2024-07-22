@@ -19,6 +19,8 @@ def str_to_phone(value, arg=None):
 
 @register.filter()
 def is_liked(user, product) -> bool:
+    if user.is_anonymous:
+        return False
     return Favorite.objects.filter(user=user, product=product).exists()
 
 

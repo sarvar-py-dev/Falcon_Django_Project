@@ -1,18 +1,17 @@
 from django.contrib.auth import logout
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.views import LoginView
 from django.db.models import Sum, F, Q, Avg
-from django.http import JsonResponse, HttpResponseRedirect
+from django.http import JsonResponse, HttpResponseRedirect, FileResponse
 from django.shortcuts import redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import ListView, DetailView, UpdateView, CreateView, DeleteView
 
 from apps.forms import UserRegisterModelForm, OrderCreateModelForm
-from apps.models import Product, Category, User, CartItem, Address, Review, SiteSettings
-from apps.models.order import Order, OrderItem
-from apps.models.product import Favorite
+from apps.models import Product, Category, User, CartItem, Address, Review, SiteSettings, Favorite, Order, OrderItem
 from apps.tasks import send_to_email
-from generate_pdf import make_pdf
+from apps.utils import make_pdf
 
 
 # from django.core.cache import cache
@@ -47,7 +46,8 @@ class ProductListView(CategoryMixin, ListView):
         # if cache.get('product_list'):
         #     return cache.get('product_list')
         # cache.set('product_list', qs, timeout=7200)
-        if self.request.user.is_authenticated and (self.request.user.has_pro or self.request.user.is_superuser or self.request.user.is_sta):
+        if self.request.user.is_authenticated and (
+                self.request.user.has_pro or self.request.user.is_superuser or self.request.user.is_staff):
             return qs
         return qs.filter(is_premium=False)
 
@@ -90,6 +90,12 @@ class SettingsUpdateView(LoginRequiredMixin, CategoryMixin, UpdateView):
         return self.request.user
 
 
+class CustomLoginView(LoginView):
+    template_name = 'apps/auth/login.html'
+    redirect_authenticated_user = True
+    next_page = reverse_lazy('list_view')
+
+
 class RegisterCreateView(CreateView):
     template_name = 'apps/auth/register.html'
     form_class = UserRegisterModelForm
@@ -99,9 +105,6 @@ class RegisterCreateView(CreateView):
         form.save()
         send_to_email.delay('Your account has been created', form.data['email'])
         return super().form_valid(form)
-
-    def form_invalid(self, form):
-        return super().form_invalid(form)
 
     def dispatch(self, request, *args, **kwargs):
         if self.request.user.is_authenticated:
@@ -195,7 +198,7 @@ class AddToCartView(View):
 
 class AddressCreateView(CategoryMixin, CreateView):
     model = Address
-    template_name = 'apps/address/create-address.html'
+    template_name = 'apps/auth/create-address.html'
     fields = 'city', 'street', 'zip_code', 'phone', 'full_name'
     context_object_name = 'create_address'
     success_url = reverse_lazy("checkout_page")
@@ -207,7 +210,7 @@ class AddressCreateView(CategoryMixin, CreateView):
 
 class AddressUpdateView(CategoryMixin, UpdateView):
     model = Address
-    template_name = 'apps/address/update-address.html'
+    template_name = 'apps/auth/update-address.html'
     fields = 'city', 'street', 'phone', 'zip_code'
     success_url = reverse_lazy('checkout_page')
 
@@ -236,8 +239,8 @@ class CheckoutListView(LoginRequiredMixin, CategoryMixin, ListView):
 
 
 class OrderListView(CategoryMixin, ListView):
-    model = Order
-    template_name = 'apps/orders/order-list.html'
+    queryset = Order.objects.order_by('-created_at')
+    template_name = 'apps/shopping/order-list.html'
     context_object_name = 'orders'
     paginate_by = 10
 
@@ -249,13 +252,12 @@ class OrderListView(CategoryMixin, ListView):
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(object_list=object_list, **kwargs)
         context['tax'] = SiteSettings.objects.first().tax
-
         return context
 
 
-class OrderDetailView(CategoryMixin, DetailView):
+class OrderDetailView(LoginRequiredMixin, CategoryMixin, DetailView):
     model = Order
-    template_name = 'apps/orders/order-details.html'
+    template_name = 'apps/shopping/order-details.html'
     context_object_name = 'order'
 
     def get_queryset(self):
@@ -296,7 +298,7 @@ class OrderCreateView(LoginRequiredMixin, CategoryMixin, CreateView):
 
 class CustomerListView(CategoryMixin, ListView):
     model = User
-    template_name = 'apps/customers/customers.html'
+    template_name = 'apps/auth/customers.html'
     paginate_by = 10
     context_object_name = 'customers_list'
 
@@ -319,11 +321,9 @@ class FavouriteView(LoginRequiredMixin, CategoryMixin, View):
 
 
 class OrderPdfCreateView(View):
-    def get(self, request, *args, **kwargs):
-        pk = kwargs['pk']
-        order = Order.objects.filter(pk=pk)
-        if file := order.pdf_file:
-            pass
-
-        else:
+    def get(self, request, pk, *args, **kwargs):
+        order = get_object_or_404(Order, pk=pk)
+        if not order.pdf_file:
             make_pdf(order)
+        # return FileResponse(order.pdf_file.open(), as_attachment=True)
+        return FileResponse(order.pdf_file, as_attachment=True)

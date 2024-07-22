@@ -24,13 +24,11 @@
                             </h5>
                             <p class="fs--1">{{ order.created_at|date:"F j, Y, g:i A" }}</p>
                             <div><strong class="me-2">Status: </strong>
-                                {% if order.status == 'Completed' %}
-                                    <div
-                                            class="badge rounded-pill badge-soft-success fs--2">Completed<span
+                                {% if order.status == order.Status.COMPLETED %}
+                                    <div class="badge rounded-pill badge-soft-success fs--2">Completed<span
                                             class="ms-1 fas fa-check" data-fa-transform="shrink-2"></span></div>
-                                {% elif order.status == 'Processing' %}
-                                    <div
-                                            class="badge rounded-pill badge-soft-primary fs--2">Processing<span
+                                {% elif order.status == order.Status.PROCESSING %}
+                                    <div class="badge rounded-pill badge-soft-primary fs--2">Processing<span
                                             class="ms-1 fas fa-redo"
                                             data-fa-transform="shrink-2"></span></div>
 
@@ -53,7 +51,7 @@
 
                     </div>
                     <div class="col-auto">
-                        <a href="{% url 'download_pdf' order.pk %}">
+                        <a href="{% url 'download_pdf' order.pk %}" target="_blank">
                             <button class="btn btn-falcon-default btn-sm me-1 mb-2 mb-sm-0" type="button">
                                 <svg class="svg-inline--fa fa-arrow-down fa-w-14 me-1" aria-hidden="true"
                                      focusable="false"

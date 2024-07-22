@@ -1,16 +1,12 @@
-import os
+import os.path
+import shutil
 
-import django
-
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'root.settings')
-django.setup()
-
-from apps.models.order import Order
-from apps.models import SiteSettings
-
+from reportlab.lib import colors
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
-from reportlab.lib import colors
+
+from apps.models import SiteSettings, Order
+from root.settings import MEDIA_ROOT
 
 
 def make_pdf(order: Order):
@@ -18,8 +14,12 @@ def make_pdf(order: Order):
                                          'product__shipping_cost')
 
     # Create a canvas object
-    pdf_file = f"order-{order.pk}.pdf"
-    c = canvas.Canvas(pdf_file, pagesize=letter)
+    pdf_file_folder = 'order/pdf'
+    if not os.path.exists(f"{MEDIA_ROOT}/{pdf_file_folder}"):
+        os.makedirs(f"{MEDIA_ROOT}/{pdf_file_folder}")
+
+    pdf_file_name = f"{pdf_file_folder}/order_{order.pk}.pdf"
+    c = canvas.Canvas(f"{MEDIA_ROOT}/{pdf_file_name}", pagesize=letter)
     width, height = letter
 
     # Insert bold text in the middle of the top
@@ -98,10 +98,5 @@ def make_pdf(order: Order):
 
     # Save the PDF
     c.save()
-
-    print(f"PDF created successfully: {pdf_file}")
-
-
-order_id = 50
-order = Order.objects.get(id=order_id)
-make_pdf(order)
+    order.pdf_file = pdf_file_name
+    order.save()

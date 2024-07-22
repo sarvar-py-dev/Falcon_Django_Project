@@ -19,7 +19,7 @@ class Order(CreatedBaseModel):
     status = CharField(max_length=25, choices=Status.choices, default=Status.PROCESSING)
     address = ForeignKey('apps.Address', CASCADE, related_name='orders')
     owner = ForeignKey('apps.User', CASCADE, related_name='orders')
-    pdf_file = FileField()
+    pdf_file = FileField(upload_to='order/pdf/', null=True, blank=True)
 
     @property
     def total(self):
