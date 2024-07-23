@@ -32,7 +32,7 @@
                                             class="ms-1 fas fa-redo"
                                             data-fa-transform="shrink-2"></span></div>
 
-                                {% elif order.status == 'On Hold' %}
+                                {% elif order.status == order.Status.ON_HOLD %}
                                     <div
                                             class="badge rounded-pill badge-soft-secondary fs--2">On Hold<span
                                             class="ms-1 fas fa-ban"

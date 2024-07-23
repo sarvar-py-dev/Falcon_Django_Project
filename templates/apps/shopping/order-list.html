@@ -78,18 +78,18 @@
                                 {{ order.address.street }}, {{ order.address.zip_code }}
                                 <p class="mb-0 text-500">Via Flat Rate</p>
                             </td>
-                            {% if order.status == 'Completed' %}
+                            {% if order.status == order.Status.COMPLETED %}
                                 <td class="status py-2 align-middle text-center fs-0 white-space-nowrap"><span
                                         class="badge badge rounded-pill d-block badge-soft-success">Completed<span
                                         class="ms-1 fas fa-check" data-fa-transform="shrink-2"></span></span>
                                 </td>
-                            {% elif order.status == 'Processing' %}
+                            {% elif order.status == order.Status.PROCESSING %}
                                 <td class="status py-2 align-middle text-center fs-0 white-space-nowrap"><span
                                         class="badge badge rounded-pill d-block badge-soft-primary">Processing<span
                                         class="ms-1 fas fa-redo"
                                         data-fa-transform="shrink-2"></span></span>
                                 </td>
-                            {% elif order.status == 'On Hold' %}
+                            {% elif order.status == order.Status.ON_HOLD %}
                                 <td class="status py-2 align-middle text-center fs-0 white-space-nowrap"><span
                                         class="badge badge rounded-pill d-block badge-soft-secondary">On Hold<span
                                         class="ms-1 fas fa-ban"

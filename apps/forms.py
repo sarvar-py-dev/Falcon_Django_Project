@@ -1,9 +1,7 @@
 from datetime import datetime
 
 from django.core.exceptions import ValidationError
-from django.db import transaction
 from django.forms import ModelForm, CharField, ModelChoiceField
-from django.utils.timezone import now
 
 from apps.models import User, Address, CartItem
 from apps.models.order import Order, CreditCard, OrderItem
@@ -59,5 +57,6 @@ class OrderCreateModelForm(ModelForm):
                                      quantity=cart_item.quantity,
                                      product=cart_item.product)
             cart_item.product.quantity -= cart_item.quantity
+            cart_item.product.save()
         CartItem.objects.filter(user=obj.owner).delete()
         return obj
