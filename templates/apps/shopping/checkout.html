@@ -28,7 +28,7 @@
                                 <th class="pe-0 text-end">${{ subtotal }}</th>
                             </tr>
                             <tr class="border-bottom">
-                                <th class="ps-0">Shipping</th>
+                                <th class="ps-0">Shipping cost</th>
                                 <th class="pe-0 text-end">${{ shipping_cost }}</th>
                             </tr>
                             <tr class="border-bottom">
@@ -183,7 +183,17 @@
         </div>
     </form>
     <script>
-        document.getElementById('orderForm').addEventListener('submit', function (event) {
+    // Show credit card details when credit card is selected
+    document.querySelector('input[name="payment_method"]').forEach(function (input) {
+        input.addEventListener('change', function () {
+            document.getElementById('creditCardDetails').style.display = input.value === 'credit_card' ? 'block' : 'none';
+        });
+    });
+
+    document.getElementById('orderForm').addEventListener('submit', function (event) {
+        const paymentMethod = document.querySelector('input[name="payment_method"]:checked').value;
+
+        if (paymentMethod === 'creditCard') {
             const expireDate = document.getElementById('expireDate').value;
             const [month, year] = expireDate.split('/').map(Number);
 
@@ -206,6 +216,7 @@
                 alert('The card is expired.');
                 event.preventDefault();
             }
-        });
-    </script>
+        }
+    });
+</script>
 {% endblock %}

@@ -102,7 +102,9 @@
                                         data-fa-transform="shrink-2"></span></span>
                                 </td>
                             {% endif %}
-                            <td class="amount py-2 align-middle text-end fs-0 fw-medium">${{ order.total.total|create_tax_sum:tax|add:order.total.total }}</td>
+                            <td class="amount py-2 align-middle text-end fs-0 fw-medium">
+                                ${{ order.total.total|create_tax_sum:tax|add:order.total.total }}</td>
+                            <td class="py-2 align-middle white-space-nowrap text-end">
                         </tr>
                     {% endfor %}
                     </tbody>

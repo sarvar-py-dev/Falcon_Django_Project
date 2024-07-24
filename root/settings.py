@@ -21,7 +21,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'apps.apps.AppsConfig',
+    'apps',
     'mptt',
     'django_ckeditor_5',
     'django_celery_results',
@@ -33,7 +33,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
     'allauth.socialaccount.providers.facebook',
-
+    'allauth.socialaccount.providers.telegram',
 ]
 
 MIDDLEWARE = [
@@ -254,10 +254,7 @@ SOCIALACCOUNT_PROVIDERS = {
         'SCOPE': [
             'profile',
             'email'
-        ],
-        'AUTH_PARAMS': {
-            'access_type': 'online',
-        }
+        ]
     },
     'facebook': {
         'METHOD': 'oauth2',  # Set to 'js_sdk' to use the Facebook connect SDK
@@ -269,16 +266,16 @@ SOCIALACCOUNT_PROVIDERS = {
             'id',
             'first_name',
             'last_name',
-            'middle_name',
             'name',
-            'name_format',
             'picture',
-            'short_name'
+            'short_name',
+            'email'
         ],
-        'EXCHANGE_TOKEN': True,
-        'LOCALE_FUNC': 'path.to.callable',
-        'VERIFIED_EMAIL': False,
-        'VERSION': 'v13.0',
-        'GRAPH_API_URL': 'https://graph.facebook.com/v13.0',
+        'VERSION': 'v20.0',
+        'GRAPH_API_URL': 'https://graph.facebook.com/v20.0',
+    },
+    'telegram': {
     }
 }
+
+LOGIN_REDIRECT_URL = '/'

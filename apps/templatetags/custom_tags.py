@@ -36,4 +36,4 @@ def get_last_chars(value, arg):
 
 @register.filter()
 def create_tax_sum(total_sum, tax):
-    return total_sum // tax
+    return (total_sum * tax) // 100

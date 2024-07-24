@@ -19,7 +19,9 @@
                     </div>
                     <div class="avatar avatar-5xl avatar-profile shadow-sm img-thumbnail rounded-circle">
                         <div class="h-100 w-100 rounded-circle overflow-hidden position-relative"><img
-                                src="{% static 'apps/assets/img/team/2.jpg' %}" width="200" alt=""
+                                src="
+                                        {% if user.image %}{{ user.image.url }}{% else %}{% static 'apps/assets/img/team/2.jpg' %}{% endif %}"
+                                width="200" alt=""
                                 data-dz-thumbnail="data-dz-thumbnail"/>
                             <input class="d-none" id="profile-image" type="file"/>
                             <label class="mb-0 overlay-icon d-flex flex-center" for="profile-image"><span
@@ -43,11 +45,13 @@
                         {% csrf_token %}
                         <div class="col-lg-6">
                             <label class="form-label" for="first-name">First Name</label>
-                            <input class="form-control" id="first-name" name="first_name" type="text" value="{{ user.first_name }}"/>
+                            <input class="form-control" id="first-name" name="first_name" type="text"
+                                   value="{{ user.first_name }}"/>
                         </div>
                         <div class="col-lg-6">
                             <label class="form-label" for="last-name">Last Name</label>
-                            <input class="form-control" id="last-name" name="last_name" type="text" value="{{ user.last_name }}"/>
+                            <input class="form-control" id="last-name" name="last_name" type="text"
+                                   value="{{ user.last_name }}"/>
                         </div>
                         <div class="col-lg-6">
                             <label class="form-label" for="email">Email</label>

@@ -1,6 +1,6 @@
 from django.contrib.auth.models import AbstractUser
 from django.db.models import Model, CharField, ForeignKey, CASCADE, PositiveIntegerField, OneToOneField, \
-    DateField, BooleanField
+    DateField, BooleanField, ImageField
 from django.db.models import PositiveSmallIntegerField
 
 from apps.models import CreatedBaseModel
@@ -8,6 +8,7 @@ from apps.models import CreatedBaseModel
 
 class User(AbstractUser):
     has_pro = BooleanField(default=False)
+    image = ImageField(upload_to='users/image/',  null=True, blank=True)
 
     @property
     def cart_count(self):
