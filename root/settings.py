@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.google',
     'allauth.socialaccount.providers.facebook',
     'allauth.socialaccount.providers.telegram',
+    'allauth.socialaccount.providers.github',
 ]
 
 MIDDLEWARE = [
@@ -275,6 +276,14 @@ SOCIALACCOUNT_PROVIDERS = {
         'GRAPH_API_URL': 'https://graph.facebook.com/v20.0',
     },
     'telegram': {
+    },
+    'github': {
+        'SCOPE': [
+            'user',
+            'repo',
+            'read:org',
+            'email'
+        ],
     }
 }
 

@@ -28,7 +28,7 @@ def post_save_socialaccount(sender, instance: SocialAccount, **kwargs):
                 pass
 
 
-''''
+''''        
 https://t.me/i/userpic/320/u-C-e3ovVhVMfnaM_0_8fjXmc7vqhT95WeiQD7pPwuslJIjrRT69eNnS6SkWnMzN.jpg
 
 https://cdn4.cdn-telegram.org/file/n4eDRFM7zj2ZcVkLG2-d2F4qq4kVowOPfSSteycuE_WlqDO9BcxtUhlLeYhlklspDBqKSZUG7Bd3cHTYOb_S_3EnDUoQvYllhQoi9vpU5__jhDEkXsClxGtozWR0dbmh16lkGzChnQYcehJPLRo_NHAFtluqNP0vJGnl0-p0i9TxnwJYb3ShyVIiV4_UgTnLIpQt3SgqPZb-rV2WGIDCV1EJ1TE63poClJFAtLKKCG4t3GBjiNvk0PoOlWPtRyhnxXJLDl9Yv3IdlwIujFqBjUkEB0tRFiNFVKoxlOQx7wO8O8g9GYdc5jBSlP1ucEDBSRjNnwWOYRqcDlFb_tAbSA.jpg
