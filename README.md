@@ -1,4 +1,4 @@
-# E-commerce 🛒🛍 website🌐 project
+<h1 align="center">E-commerce 🛒🛍 website🌐 project</h1>
 
 
 
