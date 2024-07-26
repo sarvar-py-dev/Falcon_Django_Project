@@ -1,9 +1,7 @@
 <h1 align="center">E-commerce website🌐 project 🛒🛍</h1>
 
----
 
 <img style="margin-left: 50px" src="apps/static/apps/assets/img/illustrations/falcon.png" alt="falcon" width="40"/>
-<span style="color: #0095ff; font-size: 40px; font-weight: bold">falcon</span>
 
 # Project files appearance
 

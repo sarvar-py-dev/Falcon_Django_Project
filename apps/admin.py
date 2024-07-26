@@ -55,3 +55,23 @@ class OrderItemsModelAdmin(ModelAdmin):
 @register(SiteSettings)
 class SiteSettingsModelAdmin(ModelAdmin):
     pass
+
+
+# @register(Order)
+# class OrderProcessingModelAdmin(ModelAdmin):
+#     pass
+#
+#
+# @register(Order)
+# class OrderPendingModelAdmin(ModelAdmin):
+#     pass
+#
+#
+# @register(Order)
+# class OrderOnHoldModelAdmin(ModelAdmin):
+#     pass
+#
+#
+# @register(Order)
+# class OrderCompletedModelAdmin(ModelAdmin):
+#     pass

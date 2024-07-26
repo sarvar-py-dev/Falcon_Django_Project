@@ -241,10 +241,7 @@ INTERNAL_IPS = [
 ]
 
 AUTHENTICATION_BACKENDS = [
-    # Needed to login by username in Django admin, regardless of `allauth`
     'django.contrib.auth.backends.ModelBackend',
-
-    # `allauth` specific authentication methods, such as login by email
     'allauth.account.auth_backends.AuthenticationBackend',
 ]
 
@@ -257,34 +254,8 @@ SOCIALACCOUNT_PROVIDERS = {
             'email'
         ]
     },
-    'facebook': {
-        'METHOD': 'oauth2',  # Set to 'js_sdk' to use the Facebook connect SDK
-        'SDK_URL': '//connect.facebook.net/{locale}/sdk.js',
-        'SCOPE': ['email', 'public_profile'],
-        'AUTH_PARAMS': {'auth_type': 'reauthenticate'},
-        'INIT_PARAMS': {'cookie': True},
-        'FIELDS': [
-            'id',
-            'first_name',
-            'last_name',
-            'name',
-            'picture',
-            'short_name',
-            'email'
-        ],
-        'VERSION': 'v20.0',
-        'GRAPH_API_URL': 'https://graph.facebook.com/v20.0',
-    },
     'telegram': {
     },
-    'github': {
-        'SCOPE': [
-            'user',
-            'repo',
-            'read:org',
-            'email'
-        ],
-    }
 }
 
 LOGIN_REDIRECT_URL = '/'
