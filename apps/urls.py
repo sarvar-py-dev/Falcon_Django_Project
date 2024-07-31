@@ -1,7 +1,5 @@
-from django.contrib.auth.views import LoginView
-from django.urls import path, include
+from django.urls import path
 
-from apps.models.order import Order
 from apps.views import ProductListView, ProductDetailView, SettingsUpdateView, RegisterCreateView, LogoutView, \
     CartListView, \
     CartDeleteView, AddToCartView, update_quantity, AddressCreateView, CheckoutListView, AddressUpdateView, \
@@ -13,7 +11,7 @@ urlpatterns = [
     path('detail/<int:pk>', ProductDetailView.as_view(), name='detail_view'),
     path('settings', SettingsUpdateView.as_view(), name='settings_page'),
     path('register', RegisterCreateView.as_view(), name='register_page'),
-    path('login', CustomLoginView.as_view(),name='login_page'),
+    path('login', CustomLoginView.as_view(), name='login_page'),
 
     path('logout', LogoutView.as_view(), name='logout_page'),
     path('shopping-cart', CartListView.as_view(), name='cart_page'),

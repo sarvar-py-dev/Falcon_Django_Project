@@ -27,6 +27,7 @@ INSTALLED_APPS = [
     'django_celery_results',
     'django_celery_beat',
     "debug_toolbar",
+    'django_recaptcha',
 
     'allauth',
     'allauth.account',
@@ -259,3 +260,6 @@ SOCIALACCOUNT_PROVIDERS = {
 }
 
 LOGIN_REDIRECT_URL = '/'
+
+RECAPTCHA_PUBLIC_KEY = os.getenv('RECAPTCHA_PUBLIC_KEY')
+RECAPTCHA_PRIVATE_KEY = os.getenv('RECAPTCHA_PRIVATE_KEY')

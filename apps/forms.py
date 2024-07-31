@@ -1,14 +1,17 @@
 from datetime import datetime
 
+from django.contrib.auth.forms import AuthenticationForm
 from django.core.exceptions import ValidationError
 from django.forms import ModelForm, CharField, ModelChoiceField
+from django_recaptcha.fields import ReCaptchaField
 
 from apps.models import User, Address, CartItem
 from apps.models.order import Order, CreditCard, OrderItem
 
 
-class UserRegisterModelForm(ModelForm):
+class UserRegisterModelForm(AuthenticationForm, ModelForm):
     password2 = CharField(max_length=128)
+    captcha = ReCaptchaField()
 
     class Meta:
         model = User
