@@ -14,7 +14,7 @@ DEBUG = os.getenv('DEBUG')
 ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS = [
-    'jazzmin',
+    # 'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -76,7 +76,9 @@ AUTH_USER_MODEL = 'apps.User'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
+        # 'ENGINE': 'django.db.backends.sqlite3',
+        # 'NAME': BASE_DIR / 'db.sqlite3'
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': os.getenv('PG_NAME'),
         'USER': os.getenv('PG_USER'),
         'PASSWORD': os.getenv('PG_PASSWORD'),
@@ -225,7 +227,8 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = os.getenv('USER_EMAIL')
 EMAIL_HOST_PASSWORD = os.getenv('PASSWORD_EMAIL')
 # CELERY_BROKER_URL = 'redis://localhost:6379/0'
-CELERY_BROKER_URL = 'amqp://guest:guest@localhost:5672//'
+CELERY_BROKER_URL = os.getenv('BROKER_URL')
+# CELERY_BROKER_URL = 'amqp://guest:guest@localhost:5672//'
 CELERY_RESULT_BACKEND = 'django-db'
 
 # CACHES = {

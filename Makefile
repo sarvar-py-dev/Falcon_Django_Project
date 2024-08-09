@@ -14,5 +14,11 @@ flower:
 dumpdata:
 	python3 manage.py dumpdata --indent=2 apps.Category > categories.json
 
-loaddata:
+loaddata:z
 	python3 manage.py loaddata categories
+
+make_image:
+	docker build -t falcon_tmp_image .
+
+container:
+	docker run --name falcon_tmp_container -p 8000:8088 -d falcon_tmp_image

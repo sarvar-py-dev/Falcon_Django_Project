@@ -1,0 +1,74 @@
+services:
+  django_service:
+    build:
+      context: .
+      dockerfile: deploy/django/Dockerfile
+    command: python3 manage.py runserver 0:8088
+    ports:
+      - 8000:8088
+    volumes:
+      - static_volume_falcon_tmp:/app/static
+      - media_volume_falcon_tmp:/app/media
+    env_file: .env
+    depends_on:
+      - postgres_service
+
+  celery_service:
+    build:
+      context: .
+      dockerfile: deploy/django/Dockerfile
+    command: /celery
+    volumes:
+      - static_volume_falcon_tmp:/app/static
+      - media_volume_falcon_tmp:/app/media
+    env_file: .env
+    depends_on:
+      - postgres_service
+      - redis_service
+
+  celery_beat_service:
+    build:
+      context: .
+      dockerfile: deploy/django/Dockerfile
+    command: /celery-beat
+    volumes:
+      - static_volume_falcon_tmp:/app/static
+      - media_volume_falcon_tmp:/app/media
+    env_file: .env
+    depends_on:
+      - postgres_service
+      - redis_service
+
+  flower_service:
+    build:
+      context: .
+      dockerfile: deploy/django/Dockerfile
+    command: /flower
+    volumes:
+      - static_volume_falcon_tmp:/app/static
+      - media_volume_falcon_tmp:/app/media
+    env_file: .env
+    ports:
+      - 5001:5001
+    depends_on:
+      - postgres_service
+      - redis_service
+      - celery_service
+
+  redis_service:
+    image: redis:alpine
+    volumes:
+      - falcon_tmp_redis_data:/data
+
+  postgres_service:
+    image: postgres:alpine
+    environment:
+      - POSTGRES_PASSWORD=0820
+    volumes:
+      - falcon_tmp_pg_data:/var/lib/postgresql/data
+
+volumes:
+  falcon_tmp_pg_data:
+  static_volume_falcon_tmp:
+  media_volume_falcon_tmp:
+  falcon_tmp_redis_data:

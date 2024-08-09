@@ -9,9 +9,10 @@ from apps.models import User, Address, CartItem
 from apps.models.order import Order, CreditCard, OrderItem
 
 
-class UserRegisterModelForm(AuthenticationForm, ModelForm):
+class UserRegisterModelForm(ModelForm):
     password2 = CharField(max_length=128)
-    captcha = ReCaptchaField()
+
+    # captcha = ReCaptchaField() AuthenticationForm
 
     class Meta:
         model = User
